@@ -32,10 +32,14 @@ void setup() {
 
 void draw() {
   fill(255);
-  rect(0, 0, width * 2, height / 1.75);
+  stroke(0);
+  strokeWeight(1);
+  rect(0, 0, width * 2, height / 1.75 - 1);
   
   fill(red, green, blue);
-  rect(width * 0.75, 0, width / 2, height / 1.75);
+  rect(width * 0.75, 0, width / 2, height / 1.75 - 1);
+  
+  noStroke();
   
   if (mousePressed) {
     if ((mouseX > redLineX - sliderSize / 2 && mouseX < redLineX + sliderSize / 2) && (mouseY > redLineY && mouseY < redLineY + redLineLength)) {
