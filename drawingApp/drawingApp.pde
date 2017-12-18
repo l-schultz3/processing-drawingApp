@@ -1,20 +1,42 @@
-float redLineX = 100, redLineY = 50, redLineLength = 255, redDotY = 50;
-float greenLineX = 150, greenLineY = 50, greenLineLength = 255, greenDotY = 250;
-float blueLineX = 200, blueLineY = 50, blueLineLength = 255, blueDotY = 250;
+float redLineX = width * 0.125, redLineY = height * 0.04, redLineLength = 255, redDotY = height * 0.04;
+float greenLineX = width * 0.1875, greenLineY = height * 0.04, greenLineLength = 255, greenDotY = height * 0.04 + 255;
+float blueLineX = width * 0.25, blueLineY = height * 0.04, blueLineLength = 255, blueDotY = height * 0.04 + 255;
 
 float red, green, blue;
 
 int sliderSize = 40;
+int size = 30;
+
+float lastDrawX = -1, lastDrawY = -1;
 
 void setup() {
   background(255);
   noFill();
   rectMode(CENTER);
+  
+  frameRate(120);
+  
+  redLineX = width * 0.125; 
+  redLineY = height * 0.04; 
+  redLineLength = 255; 
+  redDotY = height * 0.04;
+  greenLineX = width * 0.1875; 
+  greenLineY = height * 0.04; 
+  greenLineLength = 255;
+  greenDotY = height * 0.04 + 255;
+  blueLineX = width * 0.25;
+  blueLineY = height * 0.04; 
+  blueLineLength = 255; 
+  blueDotY = height * 0.04 + 255;
 }
 
 void draw() {
   fill(255);
   rect(0, 0, width * 2, height / 1.75);
+  
+  fill(red, green, blue);
+  rect(width * 0.75, 0, width / 2, height / 1.75);
+  
   if (mousePressed) {
     if ((mouseX > redLineX - sliderSize / 2 && mouseX < redLineX + sliderSize / 2) && (mouseY > redLineY && mouseY < redLineY + redLineLength)) {
       if (redDotY >= redLineY && redDotY <= redLineY + redLineLength) {
@@ -49,11 +71,37 @@ void draw() {
     }
     
     fill(red, green, blue);
-    ellipse(mouseX, mouseY, 30, 30);
+    if (lastDrawX > 0 && lastDrawY > 0) {
+      checkTouch(mouseX, mouseY);
+    } else {
+      lastDrawX = mouseX;
+      lastDrawY = mouseY;
+    }
+    ellipse(mouseX, mouseY, size, size);
     fill(0);
+  } else {
+    lastDrawX = -1;
+    lastDrawY = -1;
   }
   
   colourSliders();
+}
+
+void checkTouch(int currentX, int currentY) {
+  if ((currentX < lastDrawX - size / 2) || (currentX > lastDrawX + size / 2) || (currentY < lastDrawY - size / 2) || (currentY > lastDrawY + size / 2)) {
+    /*float differenceInX = currentX - lastDrawX;
+    float differenceInY = currentY - lastDrawY;*/
+    
+    //print("\ndifferenceInX = " + str(differenceInX) + " differenceInY = " + str(differenceInY));
+    strokeWeight(size);
+    stroke(red, green, blue);
+    line(lastDrawX, lastDrawY, currentX, currentY);
+  }
+  
+  lastDrawX = currentX;
+  lastDrawY = currentY;
+  
+  noStroke();
 }
 
 void colourSliders() {
