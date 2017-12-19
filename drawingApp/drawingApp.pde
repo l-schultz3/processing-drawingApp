@@ -1,11 +1,13 @@
-float redLineX = width * 0.125, redLineY = height * 0.04, redLineLength = 255, redDotY = height * 0.04;
-float greenLineX = width * 0.1875, greenLineY = height * 0.04, greenLineLength = 255, greenDotY = height * 0.04 + 255;
-float blueLineX = width * 0.25, blueLineY = height * 0.04, blueLineLength = 255, blueDotY = height * 0.04 + 255;
+float redLineX, redLineY, redLineLength, redDotY;
+float greenLineX, greenLineY, greenLineLength, greenDotY;
+float blueLineX, blueLineY, blueLineLength, blueDotY;
+float sizeLineX, sizeLineY, sizeLineLength, sizeDotY;
+float buttonWidth, buttonHeight;
 
 float red, green, blue;
 
 int sliderSize = 40;
-int size = 30;
+float size;
 
 float lastDrawX = -1, lastDrawY = -1;
 
@@ -20,14 +22,24 @@ void setup() {
   redLineY = height * 0.04; 
   redLineLength = 255; 
   redDotY = height * 0.04;
+  
   greenLineX = width * 0.1875; 
   greenLineY = height * 0.04; 
   greenLineLength = 255;
   greenDotY = height * 0.04 + 255;
+  
   blueLineX = width * 0.25;
   blueLineY = height * 0.04; 
   blueLineLength = 255; 
   blueDotY = height * 0.04 + 255;
+  
+  sizeLineX = width * 0.35;
+  sizeLineY = height * 0.04; 
+  sizeLineLength = 255;
+  sizeDotY = height * 0.04 + 100;
+  
+  buttonWidth = width * 0.125;
+  buttonHeight = height * 0.04;
 }
 
 void draw() {
@@ -37,7 +49,13 @@ void draw() {
   rect(0, 0, width * 2, height / 1.75 - 1);
   
   fill(red, green, blue);
-  rect(width * 0.75, 0, width / 2, height / 1.75 - 1);
+  ellipse(width * 0.75, (height / 1.75) / 4, size, size);
+  
+  fill(255);
+  rect(width * 0.50, height * 0.08, buttonWidth, buttonHeight, 10);
+  
+  fill(0);
+  rect(width * 0.50, height * 0.21, buttonWidth, buttonHeight, 10);
   
   noStroke();
   
@@ -72,31 +90,47 @@ void draw() {
           blueDotY = blueLineY + blueLineLength;
         }
       }
+    } else if ((mouseX > sizeLineX - sliderSize / 2 && mouseX < sizeLineX + sliderSize / 2) && (mouseY > sizeLineY && mouseY < sizeLineY + sizeLineLength)) {
+      if (sizeDotY >= sizeLineY && sizeDotY <= sizeLineY + sizeLineLength) {
+        sizeDotY = mouseY;
+      } else {
+        if (sizeDotY < sizeLineY) {
+          sizeDotY = sizeLineY;
+        } else {
+          sizeDotY = sizeLineY + sizeLineLength;
+        }
+      }
+    } else if ((mouseX > (width * 0.5 - buttonWidth / 2) && mouseX < (width * 0.5 + buttonWidth / 2)) && (mouseY > (height * 0.08 - buttonHeight / 2) && mouseY < (height * 0.08 + buttonHeight / 2))) {
+      redDotY = height * 0.04;
+      greenDotY = height * 0.04;
+      blueDotY = height * 0.04;
+    } else if ((mouseX > (width * 0.5 - buttonWidth / 2) && mouseX < (width * 0.5 + buttonWidth / 2)) && (mouseY > (height * 0.21 - buttonHeight / 2) && mouseY < (height * 0.21 + buttonHeight / 2))) {
+      redDotY = height * 0.04 + redLineLength;
+      greenDotY = height * 0.04 + greenLineLength;
+      blueDotY = height * 0.04 + blueLineLength;
     }
     
-    fill(red, green, blue);
-    if (lastDrawX > 0 && lastDrawY > 0) {
-      checkTouch(mouseX, mouseY);
-    } else {
-      lastDrawX = mouseX;
-      lastDrawY = mouseY;
+    if (mouseY >= height / 1.75 / 2) {
+      fill(red, green, blue);
+      if (lastDrawX > 0 && lastDrawY > 0) {
+        checkTouch(mouseX, mouseY);
+      } else {
+        lastDrawX = mouseX;
+        lastDrawY = mouseY;
+      }
+      ellipse(mouseX, mouseY, size, size);
+      fill(0);
     }
-    ellipse(mouseX, mouseY, size, size);
-    fill(0);
   } else {
     lastDrawX = -1;
     lastDrawY = -1;
   }
   
-  colourSliders();
+  sliders();
 }
 
 void checkTouch(int currentX, int currentY) {
   if ((currentX < lastDrawX - size / 2) || (currentX > lastDrawX + size / 2) || (currentY < lastDrawY - size / 2) || (currentY > lastDrawY + size / 2)) {
-    /*float differenceInX = currentX - lastDrawX;
-    float differenceInY = currentY - lastDrawY;*/
-    
-    //print("\ndifferenceInX = " + str(differenceInX) + " differenceInY = " + str(differenceInY));
     strokeWeight(size);
     stroke(red, green, blue);
     line(lastDrawX, lastDrawY, currentX, currentY);
@@ -108,7 +142,7 @@ void checkTouch(int currentX, int currentY) {
   noStroke();
 }
 
-void colourSliders() {
+void sliders() {
   strokeWeight(3);
   stroke(0);
   fill(255, 0, 0);
@@ -123,9 +157,14 @@ void colourSliders() {
   line(blueLineX, blueLineY, blueLineX, blueLineY + blueLineLength);
   ellipse(blueLineX, blueDotY, sliderSize, sliderSize);
   
+  fill(255);
+  line(sizeLineX, sizeLineY, sizeLineX, sizeLineY + sizeLineLength);
+  ellipse(sizeLineX, sizeDotY, sliderSize, sliderSize);
+  
   red = redLineLength - (redDotY - redLineY);
   green = greenLineLength - (greenDotY - greenLineY);
   blue = blueLineLength - (blueDotY - blueLineY);
+  size = sizeLineLength - (sizeDotY - sizeLineY) + 15;
   
   noStroke();
 }
