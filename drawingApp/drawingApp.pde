@@ -1,22 +1,25 @@
-float redLineX, redLineY, redLineLength, redDotY;
-float greenLineX, greenLineY, greenLineLength, greenDotY;
-float blueLineX, blueLineY, blueLineLength, blueDotY;
-float sizeLineX, sizeLineY, sizeLineLength, sizeDotY;
-float buttonWidth, buttonHeight;
+float redLineX, redLineY, redLineLength, redDotY; //variables for red slider
+float greenLineX, greenLineY, greenLineLength, greenDotY; //variables for green slider
+float blueLineX, blueLineY, blueLineLength, blueDotY; //variables for blue slider
+float sizeLineX, sizeLineY, sizeLineLength, sizeDotY; //variables for size slider
+float buttonWidth, buttonHeight; //variables for white and black buttons
 
-float red, green, blue;
+float red, green, blue; //variables for the colour values
 
-int sliderSize = 40;
-float size;
+int sliderSize = 40; //size of the knob on sliders
+float size; //size of pen when drawing
 
 float lastDrawX = -1, lastDrawY = -1;
 
+PImage pizza;
+float pizzaWidth, pizzaHeight;
+boolean imageDisplay = false;
+
+boolean pressed;
+
 void setup() {
   background(255);
-  noFill();
   rectMode(CENTER);
-  
-  frameRate(120);
   
   redLineX = width * 0.125; 
   redLineY = height * 0.04; 
@@ -40,25 +43,11 @@ void setup() {
   
   buttonWidth = width * 0.125;
   buttonHeight = height * 0.04;
+  
+  pizza = loadImage("pizzaColoring.jpg");
 }
 
 void draw() {
-  fill(255);
-  stroke(0);
-  strokeWeight(1);
-  rect(0, 0, width * 2, height / 1.75 - 1);
-  
-  fill(red, green, blue);
-  ellipse(width * 0.75, (height / 1.75) / 4, size, size);
-  
-  fill(255);
-  rect(width * 0.50, height * 0.08, buttonWidth, buttonHeight, 10);
-  
-  fill(0);
-  rect(width * 0.50, height * 0.21, buttonWidth, buttonHeight, 10);
-  
-  noStroke();
-  
   if (mousePressed) {
     if ((mouseX > redLineX - sliderSize / 2 && mouseX < redLineX + sliderSize / 2) && (mouseY > redLineY && mouseY < redLineY + redLineLength)) {
       if (redDotY >= redLineY && redDotY <= redLineY + redLineLength) {
@@ -108,6 +97,17 @@ void draw() {
       redDotY = height * 0.04 + redLineLength;
       greenDotY = height * 0.04 + greenLineLength;
       blueDotY = height * 0.04 + blueLineLength;
+    } else if (((mouseX > (width * 0.5 - buttonWidth / 2) && mouseX < (width * 0.5 + buttonWidth / 2)) && (mouseY > (height * 0.14 - buttonHeight / 2) && mouseY < (height * 0.14 + buttonHeight / 2))) && !(pressed)) {
+      if (imageDisplay) {
+        background(255);
+        imageDisplay = false;
+      } else {
+        background(255);
+        image(pizza, width / 10, height / 1.75 / 2, width / 1.45, height / 1.45);
+        imageDisplay = true;
+      }
+      
+      pressed = true;
     }
     
     if (mouseY >= height / 1.75 / 2) {
@@ -124,8 +124,11 @@ void draw() {
   } else {
     lastDrawX = -1;
     lastDrawY = -1;
+    
+    pressed = false;
   }
   
+  drawControls();
   sliders();
 }
 
@@ -145,26 +148,51 @@ void checkTouch(int currentX, int currentY) {
 void sliders() {
   strokeWeight(3);
   stroke(0);
-  fill(255, 0, 0);
+  
+  fill(255, 0, 0); //draw red slider
   line(redLineX, redLineY, redLineX, redLineY + redLineLength);
   ellipse(redLineX, redDotY, sliderSize, sliderSize);
   
-  fill(0, 255, 0);
+  fill(0, 255, 0); //draw green slider
   line(greenLineX, greenLineY, greenLineX, greenLineY + greenLineLength);
   ellipse(greenLineX, greenDotY, sliderSize, sliderSize);
   
-  fill(0, 0, 255);
+  fill(0, 0, 255); //draw blue slider
   line(blueLineX, blueLineY, blueLineX, blueLineY + blueLineLength);
   ellipse(blueLineX, blueDotY, sliderSize, sliderSize);
   
-  fill(255);
+  fill(255); //draw size slider
   line(sizeLineX, sizeLineY, sizeLineX, sizeLineY + sizeLineLength);
   ellipse(sizeLineX, sizeDotY, sliderSize, sliderSize);
   
-  red = redLineLength - (redDotY - redLineY);
-  green = greenLineLength - (greenDotY - greenLineY);
-  blue = blueLineLength - (blueDotY - blueLineY);
-  size = sizeLineLength - (sizeDotY - sizeLineY) + 15;
+  red = redLineLength - (redDotY - redLineY); //sets the red value between 0 and 255 depending on knob position
+  green = greenLineLength - (greenDotY - greenLineY); //sets the green value between 0 and 255 depending on knob position
+  blue = blueLineLength - (blueDotY - blueLineY); //sets the blue value between 0 and 255 depending on knob position
+  size = sizeLineLength - (sizeDotY - sizeLineY) + 10; //sets the size value between 10 and 265 depending on knob position
+  
+  noStroke();
+}
+
+void drawControls() {
+  fill(255);
+  stroke(0);
+  strokeWeight(1);
+  rect(0, 0, width * 2, height / 1.75 - 1);
+  
+  fill(red, green, blue);
+  ellipse(width * 0.78, (height / 1.75) / 4, size, size);
+  
+  fill(255);
+  rect(width * 0.50, height * 0.08, buttonWidth, buttonHeight, 10);
+  
+  rect(width * 0.50, height * 0.14, buttonWidth, buttonHeight, 10);
+  
+  fill(0);
+  
+  textSize(sliderSize);
+  text("pizza", width * 0.50, height * 0.14 + buttonHeight / 8, buttonWidth, buttonHeight);
+  
+  rect(width * 0.50, height * 0.20, buttonWidth, buttonHeight, 10);
   
   noStroke();
 }
