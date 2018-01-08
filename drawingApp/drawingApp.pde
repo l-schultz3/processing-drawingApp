@@ -91,13 +91,20 @@ void draw() {
       greenDotY = height * 0.04 + lineLength;
       blueDotY = height * 0.04 + lineLength;
     } else if (((mouseX > (width * 0.5 - buttonWidth / 2) && mouseX < (width * 0.5 + buttonWidth / 2)) && (mouseY > (height * 0.14 - buttonHeight / 2) && mouseY < (height * 0.14 + buttonHeight / 2))) && !(pressed)) {
-      if (imageDisplay) {
-        background(255);
-        imageDisplay = false;
+      if (width < height) {
+        if (imageDisplay) {
+          background(255);
+          imageDisplay = false;
+        } else {
+          background(255);
+          image(pizza, width / 10, height / 1.75 / 2, width / 1.45, height / 1.45);
+          imageDisplay = true;
+        }
       } else {
-        background(255);
-        image(pizza, width / 10, height / 1.75 / 2, width / 1.45, height / 1.45);
-        imageDisplay = true;
+        fill(255);
+        rect(width / 2, height * 0.75, width / 3, height * 0.1);
+        fill(0);
+        text("unable to display image", width / 3, height * 0.75);
       }
       
       pressed = true;
