@@ -2,7 +2,7 @@ float redLineX, redDotY; //variables for red slider
 float greenLineX, greenDotY; //variables for green slider
 float blueLineX, blueDotY; //variables for blue slider
 float sizeLineX, sizeDotY; //variables for size slider
-float buttonWidth, buttonHeight; //variables for white, black and clear buttons
+float buttonWidth, buttonHeight, buttonSpacing, buttonY; //variables for white, black and clear buttons
 float lineLength = 255, lineY, size, controlHeight;
 float red, green, blue; //variables for the colour values
 
@@ -30,8 +30,17 @@ void setup() {
   sizeLineX = width * 0.35;
   sizeDotY = height * 0.04 + 100;
   
-  buttonWidth = width * 0.125;
-  buttonHeight = height * 0.04;
+  buttonY = height * 0.08;
+  
+  if (height > width) {
+    buttonWidth = width * 0.125;
+    buttonHeight = height * 0.04;
+    buttonSpacing = height * 0.06;
+  } else {
+    buttonWidth = width * 0.08;
+    buttonHeight = height * 0.06;
+    buttonSpacing = height * 0.08;
+  }
   
   lineY = height * 0.04;
   
@@ -82,15 +91,15 @@ void draw() {
           sizeDotY = lineY + lineLength;
         }
       }
-    } else if ((mouseX > (width * 0.5 - buttonWidth / 2) && mouseX < (width * 0.5 + buttonWidth / 2)) && (mouseY > (height * 0.08 - buttonHeight / 2) && mouseY < (height * 0.08 + buttonHeight / 2))) {
+    } else if ((mouseX > (width * 0.5 - buttonWidth / 2) && mouseX < (width * 0.5 + buttonWidth / 2)) && (mouseY > (buttonY - buttonHeight / 2) && mouseY < (buttonY + buttonHeight / 2))) {
       redDotY = height * 0.04;
       greenDotY = height * 0.04;
       blueDotY = height * 0.04;
-    } else if ((mouseX > (width * 0.5 - buttonWidth / 2) && mouseX < (width * 0.5 + buttonWidth / 2)) && (mouseY > (height * 0.21 - buttonHeight / 2) && mouseY < (height * 0.21 + buttonHeight / 2))) {
+    } else if ((mouseX > (width * 0.5 - buttonWidth / 2) && mouseX < (width * 0.5 + buttonWidth / 2)) && (mouseY > (buttonY + buttonSpacing - buttonHeight / 2) && mouseY < (buttonY + buttonSpacing + buttonHeight / 2))) {
       redDotY = height * 0.04 + lineLength;
       greenDotY = height * 0.04 + lineLength;
       blueDotY = height * 0.04 + lineLength;
-    } else if (((mouseX > (width * 0.5 - buttonWidth / 2) && mouseX < (width * 0.5 + buttonWidth / 2)) && (mouseY > (height * 0.14 - buttonHeight / 2) && mouseY < (height * 0.14 + buttonHeight / 2))) && !(pressed)) {
+    } else if (((mouseX > (width * 0.5 - buttonWidth / 2) && mouseX < (width * 0.5 + buttonWidth / 2)) && (mouseY > (buttonY + 2 * buttonSpacing - buttonHeight / 2) && mouseY < (buttonY + 2 *buttonSpacing + buttonHeight / 2))) && !(pressed)) {
       if (width < height) {
         if (imageDisplay) {
           background(255);
@@ -101,10 +110,7 @@ void draw() {
           imageDisplay = true;
         }
       } else {
-        fill(255);
-        rect(width / 2, height * 0.75, width / 3, height * 0.1);
-        fill(0);
-        text("unable to display image", width / 3, height * 0.75);
+        background(255);
       }
       
       pressed = true;
@@ -158,17 +164,22 @@ void drawControls() {
   fill(red, green, blue);
   ellipse(width * 0.78, controlHeight / 2, size, size);
   
-  fill(255);
-  rect(width * 0.50, height * 0.08, buttonWidth, buttonHeight, 10);
-  
-  rect(width * 0.50, height * 0.14, buttonWidth, buttonHeight, 10);
-  
   fill(0);
+  rect(width * 0.5, buttonY + buttonSpacing, buttonWidth, buttonHeight, 10);
   
-  textSize(sliderSize);
-  text("pizza", width * 0.5, height * 0.14 + buttonHeight / 8, buttonWidth, buttonHeight);
+  fill(127);
+  rect(width * 0.5, buttonY + 2 * buttonSpacing, buttonWidth, buttonHeight, 10);
   
-  rect(width * 0.50, height * 0.20, buttonWidth, buttonHeight, 10);
+  fill(255);
+  rect(width * 0.5, buttonY, buttonWidth, buttonHeight, 10);
+  
+  if (height > width) {
+    textSize(sliderSize);
+    text("pizza", width * 0.5, height * 0.2 + buttonHeight / 8, buttonWidth, buttonHeight);
+  } else {
+    textSize(height * 0.05);
+    text("clear", width * 0.5, buttonY * 2 + buttonSpacing + buttonHeight / 8, buttonWidth, buttonHeight);
+  }
   
   noStroke();
 }
