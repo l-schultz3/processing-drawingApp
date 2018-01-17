@@ -178,10 +178,10 @@ void drawControls() {
   rect(width * 0.5, buttonY, buttonWidth, buttonHeight, 10);
   
   if (height > width) { //if device is in portrait mode
-    textSize(sliderSize);
+    fontCalculator("pizza", buttonWidth, buttonHeight);
     text("pizza", width * 0.5, height * 0.2 + buttonHeight / 8, buttonWidth, buttonHeight);
   } else { //if device is in landscape mode
-    textSize(height * 0.05);
+    fontCalculator("clear", buttonWidth, buttonHeight);
     text("clear", width * 0.5, buttonY * 2 + buttonSpacing + buttonHeight / 8, buttonWidth, buttonHeight);
   }
   
